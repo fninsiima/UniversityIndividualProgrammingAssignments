@@ -1,0 +1,251 @@
+' project:               Toyota_Uganda_Limited
+' programmer:            Ninsiima Flavia Delmira
+' last modified:         3/3/2013
+' description:           This appplication processes mail order sales of repair parts
+
+' studentNumber:         210000613
+' regNumber:             10/U/1382
+' courseName:            IndividualProjectII
+' courseCode:            CSC 2212
+
+' assignment 1
+
+Public Class MainForm
+
+    Private Sub ExitButton_Click(sender As Object, e As EventArgs) Handles ExitButton.Click
+        ' Exits the application
+        Dim YesButtonDialogResult As DialogResult
+
+        YesButtonDialogResult = MessageBox.Show("Do you wish to exit the application?", "Exit Application", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+        If YesButtonDialogResult = Windows.Forms.DialogResult.Yes Then
+            ' Exit the application
+
+            Me.Close()
+        End If
+    End Sub
+
+    Private Sub CustomerIDMaskedTextBox_MaskInputRejected(sender As Object, e As MaskInputRejectedEventArgs) Handles CustomerIDMaskedTextBox.MaskInputRejected
+        ' Enter social security number
+
+        ' The Form starts up with focus on this control
+        CustomerIDMaskedTextBox.Focus()
+    End Sub
+
+    Private Sub NewOrderButton_Click(sender As Object, e As EventArgs) Handles NewOrderButton.Click
+        ' Resets groupbox controls so as to compute a New Order
+
+        ' Clearing all TextBox and MaskedTextBox control contents
+        ' Clearing CustomerGroupbox controls
+        CustomerIDMaskedTextBox.Clear()
+        NameTextBox.Clear()
+        StateTextBox.Clear()
+
+        ' Clearing PartOrderedGroupBox controls
+        PartNoTextBox.Clear()
+        DescriptionTextBox.Clear()
+        PriceTextBox.Clear()
+        QuantityTextBox.Clear()
+
+        ' Clearing OutputGroupBox controls
+        CostTextBox.Clear()
+        TaxTextBox.Clear()
+        ShippingTextBox.Clear()
+        TotalTextBox.Clear()
+
+        RetailCheckBox.Checked = True       ' Checks the RetailCheckBox control
+        OversizeCheckBox.Checked = False    ' Unchecks the OversizeCheckBox control
+        UPSRadioButton.Checked = True       ' Resets the Shipping RadioButton controls to the UPS shipping method
+        CustomerIDMaskedTextBox.Focus()     ' Sets focus to CustomerIDMaskedTextBox control
+    End Sub
+
+    Private Sub ComputeButton_Click(sender As Object, e As EventArgs) Handles ComputeButton.Click
+        ' Computes the cost, sales tax, shipping and handling, and total charge
+
+        'Declaring variables
+        Dim CostDecimal, SalesTaxDecimal, ShippingHandlingDecimal, TotalDecimal As Decimal
+
+        Try
+            ' Validate data
+            If ValidData() Then
+                ' Data is valid
+
+                ' Declaring and initialising cost computation variables
+                Dim PriceDecimal As Decimal = Decimal.Parse(PriceTextBox.Text)
+                Dim QuantityInteger As Integer = Integer.Parse(QuantityTextBox.Text)
+
+                ' Computing cost charges
+                CostDecimal = PriceDecimal * QuantityInteger
+
+                ' Computing the amount of sales tax...
+                SalesTaxDecimal = SalesTax(CostDecimal)
+
+                ' Computing shipping and handling charges...
+                ShippingHandlingDecimal = ShippingHandling()
+
+                ' Computing the total
+                TotalDecimal = CostDecimal + SalesTaxDecimal + ShippingHandlingDecimal
+
+                ' Formatting values and displaying them in the appropriate OutputGroupBox controls...
+                CostTextBox.Text = CostDecimal.ToString("C")
+                TaxTextBox.Text = SalesTaxDecimal.ToString("N")
+                ShippingTextBox.Text = ShippingHandlingDecimal.ToString("N")
+                TotalTextBox.Text = TotalDecimal.ToString("C")
+            End If
+        Catch ex As Exception
+            'Handle a generic exception
+
+            MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
+    End Sub
+
+    Private Function ValidData() As Boolean
+        ' This function validates data so as to meet business requirements
+
+        ' Initialise function return value
+        ValidData = False
+        Dim MessageString As String
+
+        ' Test CustomerID is complete
+        If CustomerIDMaskedTextBox.MaskCompleted = False Then
+            ' Required ID is not complete
+            MessageBox.Show("Customer SSN is not complete", "Customer SNN Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            With CustomerIDMaskedTextBox
+                .Focus()
+                .SelectAll()
+            End With
+        ElseIf NameTextBox.Text.Trim = String.Empty Then
+            ' Validate Name
+            MessageString = "Name is required."
+            MessageBox.Show(MessageString, "Data Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            With NameTextBox
+                .Focus()
+                .SelectAll()
+            End With
+        ElseIf StateTextBox.Text.Trim.Length <> 3 Then
+            ' Validate State Code
+            MessageString = "Town Code must be exactly three characters"
+            MessageBox.Show(MessageString, "Data Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            With StateTextBox
+                .Focus()
+                .SelectAll()
+            End With
+        ElseIf PartNoTextBox.Text.Trim = String.Empty Then
+            ' Validate Part Number
+            MessageString = "Part Number is required."
+            MessageBox.Show(MessageString, "Data Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            With PartNoTextBox
+                .Focus()
+                .SelectAll()
+            End With
+        ElseIf DescriptionTextBox.Text.Trim = String.Empty Then
+            ' Validate Description
+            MessageString = "Description is required."
+            MessageBox.Show(MessageString, "Data Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            With DescriptionTextBox
+                .Focus()
+                .SelectAll()
+            End With
+        ElseIf IsNumeric(PriceTextBox.Text) = False Or Val(PriceTextBox.Text) <= 0 Then
+            ' Test if Price is a number greater than zero
+            MessageString = "Price must be greater than zero"
+            MessageBox.Show(MessageString, "Data Entry Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            With PriceTextBox
+                .Focus()
+                .SelectAll()
+            End With
+        ElseIf IsNumeric(QuantityTextBox.Text) = False Or Val(QuantityTextBox.Text) <= 0 Then
+            ' Test if Quantity is a number greater than zero
+            MessageString = "Quantity must be greater than zero"
+            MessageBox.Show(MessageString, "Data Entry Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            With QuantityTextBox
+                .Focus()
+                .SelectAll()
+            End With
+        Else
+            ' All of the data is valid
+            ValidData = True
+        End If
+    End Function
+
+    Private Function SalesTax(CostDecimal As Decimal) As Decimal
+        ' This function computes the amount of sales tax
+
+        ' Declaring constants for the various tax rates for retail customers from various towns
+        Const KLA_DECIMAL As Decimal = 0.1D
+        Const EBB_DECIMAL As Decimal = 0.05D
+        Const MBR_DECIMAL As Decimal = 0.05D
+
+        If RetailCheckBox.Checked = True Then
+            ' Calculate sales tax for retail customer depending on the Town
+            Select Case StateTextBox.Text
+                Case "KLA"
+                    ' Retail Customer from KLA
+                    Return KLA_DECIMAL * CostDecimal
+                Case "EBB"
+                    ' Retail Customer from EBB
+                    Return EBB_DECIMAL * CostDecimal
+                Case "MBR"
+                    ' Retail Customer from MBR
+                    Return MBR_DECIMAL * CostDecimal
+                Case Else
+                    ' Retail Customer is from another town
+                    Return 0D
+            End Select
+        Else
+            ' Customer is a Wholesaler
+            Return 0D
+        End If
+    End Function
+
+    Private Function ShippingHandling() As Decimal
+        ' This function computes the charge for both shipping and handling of an order
+        ' Its based on Quantity and the Shipping Method
+        ' There is an extra handling charge, per part, for an Oversize Container
+
+        ' Declaring and initialising constants for SHIPPING
+        Const POSTAL_AIR_DECIMAL As Decimal = 8.5D
+        Const FED_EX_GROUND_DECIMAL As Decimal = 9.25D
+        Const FED_EX_AIR_DECIMAL As Decimal = 12D
+        Const UPS_DECIMAL As Decimal = 7D
+
+        ' Declaring and initialising constants for HANDLING 
+        Const EXTRA_HANDLING_DECIMAL As Decimal = 5D
+
+        Dim QuantityInteger As Integer = Integer.Parse(QuantityTextBox.Text)
+
+        If OversizeCheckBox.Checked Then
+            ' Oversize Container CheckBox is checked
+
+            If PostalAirRadioButton.Checked Then
+                ' Shipping method is Postal Air
+                Return QuantityInteger * (POSTAL_AIR_DECIMAL + EXTRA_HANDLING_DECIMAL)
+            ElseIf FedExGroundRadioButton.Checked Then
+                ' Shipping method is Fed Ex Ground
+                Return QuantityInteger * (FED_EX_GROUND_DECIMAL + EXTRA_HANDLING_DECIMAL)
+            ElseIf FedExAirRadioButton.Checked Then
+                ' Shipping method is Fed Ex Air
+                Return QuantityInteger * (FED_EX_AIR_DECIMAL + EXTRA_HANDLING_DECIMAL)
+            Else
+                ' Default Shipping method is UPS
+                Return QuantityInteger * (UPS_DECIMAL + EXTRA_HANDLING_DECIMAL)
+            End If
+        Else
+            ' Oversize Container CheckBox is not checked
+            ' No EXTRA_HANDLING_CHARGE for Oversize Container
+
+            If PostalAirRadioButton.Checked Then
+                ' Shipping method is Postal Air
+                Return POSTAL_AIR_DECIMAL * QuantityInteger
+            ElseIf FedExGroundRadioButton.Checked Then
+                ' Shipping method is Fed Ex Ground
+                Return FED_EX_GROUND_DECIMAL * QuantityInteger
+            ElseIf FedExAirRadioButton.Checked Then
+                ' Shipping method is Fed Ex Air
+                Return FED_EX_AIR_DECIMAL * QuantityInteger
+            Else
+                ' Default Shipping method is UPS
+                Return UPS_DECIMAL * QuantityInteger
+            End If
+        End If
+    End Function
+End Class

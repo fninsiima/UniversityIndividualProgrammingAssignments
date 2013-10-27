@@ -1,0 +1,295 @@
+        //                                    MAKERERE UNIVERSITY
+         //    FACULTY OF COMPUTING AND INFORMATICS TECHNOLOGY
+        //                        DEPARTMENT OF COMPUTER SCIENCE
+        //                                  CSC1208 ASSIGNMENT 1     
+       //                             LECTURER:DR. JOHN NGUBIRI
+
+//NAME:NINSIIMA FLAVIA DELMIRA
+//REGISTRATION NUMBER:10/U/1382
+//STUDENT NUMBER:210000613
+
+
+/*A C PROGRAM FOR THE FACULTY REGISTRAR THAT ENABLES HIM/HER*/
+/*TO PROCESS RESULTS FOR 1ST YEAR 1ST SEMESTER STUDENTS*/
+
+#include<stdio.h>
+
+/*declaring and initialising the necessary arrays that store coursework,exam and final marks*/
+char student[25][10]={"Agaba","Arinye","Ariho","Bibeho","Bikokye","Dimba","Kato","Kubiba","Lubega","Lunguja","Mbabazi","Mwebaze","Mulumba","Muheirwe","Murungi","Nakato","Nabugabo","Ninsiima","Opolot","Oding","Singh","Shaban","Sulaiman","Tushabe","Tusiime"};
+int cw_csc_1100[25]={25,46,34,89,23,54,76,90,44,67,88,94,23,45,65,34,66,38,53,67,32,90,98,57,85};
+int ex_csc_1100[25]={98,65,35,76,44,66,70,24,33,76,96,90,23,66,55,45,87,54,67,76,32,77,90,45,77};
+int cw_csk_1101[25]={98,76,54,67,89,11,34,55,67,90,29,33,44,76,85,94,19,77,90,92,88,55,78,56,94};
+int ex_csk_1101[25]={85,76,69,94,65,43,32,11,38,84,95,66,97,15,9,77,98,45,76,87,90,55,87,65,94};
+int cw_csc_1104[25]={54,67,55,45,78,89,65,78,65,78,45,88,96,4,14,55,76,57,66,98,44,67,89,44,77};
+int ex_csc_1104[25]={67,84,39,66,77,66,48,93,45,85,28,49,18,33,48,58,68,79,9,59,33,95,22,44,55};
+int cw_csc_1105[25]={98,46,88,78,44,63,73,53,65,24,66,73,65,26,57,62,54,62,54,25,66,25,55,87,44};
+int ex_csc_1105[25]={65,67,56,54,78,87,90,19,26,77,44,56,44,77,9,67,33,78,65,23,45,77,98,77,56};
+int cw_csc_1106[25]={55,67,89,93,8,21,43,55,65,78,88,90,90,98,54,34,23,12,33,56,66,87,82,48,66};
+int ex_csc_1106[25]={67,54,78,90,11,45,45,65,45,67,77,90,89,77,56,44,12,34,34,66,55,98,66,56,77};
+
+int finalmk_csc_1100[25];
+int finalmk_csk_1101[25];
+int finalmk_csc_1104[25];
+int finalmk_csc_1105[25];
+int finalmk_csc_1106[25];
+
+/*declaring arrays to store grade points and cumulative grade point average*/
+float gp_1100[25];
+float gp_1101[25];
+float gp_1104[25];
+float gp_1105[25];
+float gp_1106[25];
+
+float CGPA[25];
+
+int count; //a variable to be used as a counter in the loops
+ 
+/*a function to compute the final mark of a student in each course unit*/
+void compute_finalmk(void)
+{
+for(count=0;count<25;count++)
+ {
+ finalmk_csc_1100[count]=(0.4*cw_csc_1100[count])+(0.6*ex_csc_1100[count])+0.5;//a 0.5 to round
+ finalmk_csk_1101[count]=(0.4*cw_csk_1101[count])+(0.6*ex_csk_1101[count])+0.5; //off to the
+ finalmk_csc_1104[count]=(0.4*cw_csc_1104[count])+(0.6*ex_csc_1104[count])+0.5; //nearest whole
+ finalmk_csc_1105[count]=(0.4*cw_csc_1105[count])+(0.6*ex_csc_1105[count])+0.5; //number
+ finalmk_csc_1106[count]=(0.4*cw_csc_1106[count])+(0.6*ex_csc_1106[count])+0.5;
+ }
+}
+
+/*a function that generates grades for the final marks*/
+void compute_grade(int f_mk)
+{
+ if(f_mk>=90&&f_mk<=100)
+   printf("A+\t\t");
+ else if(f_mk>=80&&f_mk<=89)
+   printf("A\t\t");
+ else if(f_mk>=75&&f_mk<=79)
+   printf("B+\t\t");
+ else if(f_mk>=70&&f_mk<=74)
+   printf("B\t\t");
+ else if(f_mk>=65&&f_mk<=69)
+   printf("C+\t\t");
+ else if(f_mk>=60&&f_mk<=64)
+   printf("C\t\t");
+ else if(f_mk>=55&&f_mk<=59)
+   printf("D+\t\t");
+ else if(f_mk>=50&&f_mk<=54)
+   printf("D\t\t");
+ else if(f_mk>=45&&f_mk<=49)
+   printf("E\t\t");
+ else if(f_mk>=40&&f_mk<=44)
+   printf("E-\t\t");
+ else if(f_mk>=0&&f_mk<=39)
+   printf("F\t\t");
+}
+
+/*a function that generates and stores grade points*/
+void compute_gp(void)
+{
+for(count=0;count<25;count++)
+ {
+ if(finalmk_csc_1100[count]>=90&&finalmk_csc_1100[count]<=100)
+   gp_1100[count]=5.0;
+ else if(finalmk_csc_1100[count]>=80&&finalmk_csc_1100[count]<=89)
+   gp_1100[count]=5.0;
+ else if(finalmk_csc_1100[count]>=75&&finalmk_csc_1100[count]<=79)
+   gp_1100[count]=4.5;
+ else if(finalmk_csc_1100[count]>=70&&finalmk_csc_1100[count]<=74)
+   gp_1100[count]=4.0;
+ else if(finalmk_csc_1100[count]>=65&&finalmk_csc_1100[count]<=69)
+   gp_1100[count]=3.5;
+ else if(finalmk_csc_1100[count]>=60&&finalmk_csc_1100[count]<=64)
+   gp_1100[count]=3.0;
+ else if(finalmk_csc_1100[count]>=55&&finalmk_csc_1100[count]<=59)
+   gp_1100[count]=2.5;
+ else if(finalmk_csc_1100[count]>=50&&finalmk_csc_1100[count]<=54)
+   gp_1100[count]=2.0;
+ else if(finalmk_csc_1100[count]>=45&&finalmk_csc_1100[count]<=49)
+   gp_1100[count]=1.5;
+ else if(finalmk_csc_1100[count]>=40&&finalmk_csc_1100[count]<=44)
+   gp_1100[count]=1.0;
+ else if(finalmk_csc_1100[count]>=0&&finalmk_csc_1100[count]<=39)
+   gp_1100[count]=0.0;
+
+if(finalmk_csk_1101[count]>=90&&finalmk_csk_1101[count]<=100)
+   gp_1101[count]=5.0;
+ else if(finalmk_csk_1101[count]>=80&&finalmk_csk_1101[count]<=89)
+   gp_1101[count]=5.0;
+ else if(finalmk_csk_1101[count]>=75&&finalmk_csk_1101[count]<=79)
+   gp_1101[count]=4.5;
+ else if(finalmk_csk_1101[count]>=70&&finalmk_csk_1101[count]<=74)
+   gp_1101[count]=4.0;
+ else if(finalmk_csk_1101[count]>=65&&finalmk_csk_1101[count]<=69)
+   gp_1101[count]=3.5;
+ else if(finalmk_csk_1101[count]>=60&&finalmk_csk_1101[count]<=64)
+   gp_1101[count]=3.0;
+ else if(finalmk_csk_1101[count]>=55&&finalmk_csk_1101[count]<=59)
+   gp_1101[count]=2.5;
+ else if(finalmk_csk_1101[count]>=50&&finalmk_csk_1101[count]<=54)
+   gp_1101[count]=2.0;
+ else if(finalmk_csk_1101[count]>=45&&finalmk_csk_1101[count]<=49)
+   gp_1101[count]=1.5;
+ else if(finalmk_csk_1101[count]>=40&&finalmk_csk_1101[count]<=44)
+   gp_1101[count]=1.0;
+ else if(finalmk_csk_1101[count]>=0&&finalmk_csk_1101[count]<=39)
+   gp_1101[count]=0.0;
+
+if(finalmk_csc_1104[count]>=90&&finalmk_csc_1104[count]<=100)
+   gp_1104[count]=5.0;
+ else if(finalmk_csc_1104[count]>=80&&finalmk_csc_1104[count]<=89)
+   gp_1104[count]=5.0;
+ else if(finalmk_csc_1104[count]>=75&&finalmk_csc_1104[count]<=79)
+   gp_1104[count]=4.5;
+ else if(finalmk_csc_1104[count]>=70&&finalmk_csc_1104[count]<=74)
+   gp_1104[count]=4.0;
+ else if(finalmk_csc_1104[count]>=65&&finalmk_csc_1104[count]<=69)
+   gp_1104[count]=3.5;
+ else if(finalmk_csc_1104[count]>=60&&finalmk_csc_1104[count]<=64)
+   gp_1104[count]=3.0;
+ else if(finalmk_csc_1104[count]>=55&&finalmk_csc_1104[count]<=59)
+   gp_1104[count]=2.5;
+ else if(finalmk_csc_1104[count]>=50&&finalmk_csc_1104[count]<=54)
+   gp_1104[count]=2.0;
+ else if(finalmk_csc_1104[count]>=45&&finalmk_csc_1104[count]<=49)
+   gp_1104[count]=1.5;
+ else if(finalmk_csc_1104[count]>=40&&finalmk_csc_1104[count]<=44)
+   gp_1104[count]=1.0;
+ else if(finalmk_csc_1104[count]>=0&&finalmk_csc_1104[count]<=39)
+   gp_1104[count]=0.0;
+
+if(finalmk_csc_1105[count]>=90&&finalmk_csc_1105[count]<=100)
+   gp_1105[count]=5.0;
+ else if(finalmk_csc_1105[count]>=80&&finalmk_csc_1105[count]<=89)
+   gp_1105[count]=5.0;
+ else if(finalmk_csc_1105[count]>=75&&finalmk_csc_1105[count]<=79)
+   gp_1105[count]=4.5;
+ else if(finalmk_csc_1105[count]>=70&&finalmk_csc_1105[count]<=74)
+   gp_1105[count]=4.0;
+ else if(finalmk_csc_1105[count]>=65&&finalmk_csc_1105[count]<=69)
+   gp_1105[count]=3.5;
+ else if(finalmk_csc_1105[count]>=60&&finalmk_csc_1105[count]<=64)
+   gp_1105[count]=3.0;
+ else if(finalmk_csc_1105[count]>=55&&finalmk_csc_1105[count]<=59)
+   gp_1105[count]=2.5;
+ else if(finalmk_csc_1105[count]>=50&&finalmk_csc_1105[count]<=54)
+   gp_1105[count]=2.0;
+ else if(finalmk_csc_1105[count]>=45&&finalmk_csc_1105[count]<=49)
+   gp_1105[count]=1.5;
+ else if(finalmk_csc_1105[count]>=40&&finalmk_csc_1105[count]<=44)
+   gp_1105[count]=1.0;
+ else if(finalmk_csc_1105[count]>=0&&finalmk_csc_1105[count]<=39)
+   gp_1105[count]=0.0;
+
+if(finalmk_csc_1106[count]>=90&&finalmk_csc_1106[count]<=100)
+   gp_1106[count]=5.0;
+ else if(finalmk_csc_1106[count]>=80&&finalmk_csc_1106[count]<=89)
+   gp_1106[count]=5.0;
+ else if(finalmk_csc_1106[count]>=75&&finalmk_csc_1106[count]<=79)
+   gp_1106[count]=4.5;
+ else if(finalmk_csc_1106[count]>=70&&finalmk_csc_1106[count]<=74)
+   gp_1106[count]=4.0;
+ else if(finalmk_csc_1106[count]>=65&&finalmk_csc_1106[count]<=69)
+   gp_1106[count]=3.5;
+ else if(finalmk_csc_1106[count]>=60&&finalmk_csc_1106[count]<=64)
+   gp_1106[count]=3.0;
+ else if(finalmk_csc_1106[count]>=55&&finalmk_csc_1106[count]<=59)
+   gp_1106[count]=2.5;
+ else if(finalmk_csc_1106[count]>=50&&finalmk_csc_1106[count]<=54)
+   gp_1106[count]=2.0;
+ else if(finalmk_csc_1106[count]>=45&&finalmk_csc_1106[count]<=49)
+   gp_1106[count]=1.5;
+ else if(finalmk_csc_1106[count]>=40&&finalmk_csc_1106[count]<=44)
+   gp_1106[count]=1.0;
+ else if(finalmk_csc_1106[count]>=0&&finalmk_csc_1106[count]<=39)
+   gp_1106[count]=0.0;
+ }
+}
+
+//a function that generates and stores cumulative grade point average
+void compute_CGPA(void)
+{
+for(count=0;count<25;count++)
+ {
+CGPA[count]=((gp_1100[count]*4)+(gp_1101[count]*4)+(gp_1104[count]*4)+(gp_1105[count]*3)+(gp_1106[count]*3))/18;
+ }
+}
+
+//a function that takes the final mark and prints 'retake' when applicable
+void cse_comment(int f_mk)
+{
+if(f_mk>=45&&f_mk<=49)
+printf("Retake");
+if(f_mk>=40&&f_mk<=44)
+printf("Retake");
+if(f_mk>=0&&f_mk<=39)
+printf("Retake");
+}
+ 
+//a function that prints an overallcomment
+void overall_comment(float k) //takes the cgpa as an argument
+{
+if(k>2.0)
+ printf("Progress\n\n");
+else
+ printf("Stay Put\n\n");
+}
+
+/*a function that produces a report for each student*/
+void report(void)
+{
+for(count=0;count<25;count++)
+ {
+ 
+ int f_mark0=finalmk_csc_1100[count];
+ int f_mark1=finalmk_csk_1101[count];
+ int f_mark4=finalmk_csc_1104[count];
+ int f_mark5=finalmk_csc_1105[count];
+ int f_mark6=finalmk_csc_1106[count];
+ 
+ float cgpa=CGPA[count];
+
+ printf("-----------------------------------------------------------------------------------------------------------------------------------------\n");
+ printf("Student Name:%s\n\n",student[count]);
+ printf("Course Unit\tFinal mark\tGrade\tGrade Point\tCourse Comment\n\n");
+ 
+ printf("CSC1100\t\t%d\t\t",finalmk_csc_1100[count]);
+ compute_grade(f_mark0);
+ printf("%.1f\t\t",gp_1100[count]);
+ cse_comment(f_mark0);
+ 
+ printf("\n\nCSK1101\t\t%d\t\t",finalmk_csk_1101[count]);
+ compute_grade(f_mark1);
+ printf("%.1f\t\t",gp_1101[count]);
+ cse_comment(f_mark1);
+ 
+ printf("\n\nCSC1104\t\t%d\t\t",finalmk_csc_1104[count]);
+ compute_grade(f_mark4);
+ printf("%.1f\t\t",gp_1104[count]);
+ cse_comment(f_mark4);
+ 
+ printf("\n\nCSC1105\t\t%d\t\t",finalmk_csc_1105[count]);
+ compute_grade(f_mark5);
+ printf("%.1f\t\t",gp_1105[count]);
+ cse_comment(f_mark5);
+ 
+ printf("\n\nCSC1106\t\t%d\t\t",finalmk_csc_1106[count]);
+ compute_grade(f_mark6);
+ printf("%.1f\t\t",gp_1106[count]);
+ cse_comment(f_mark6);
+ 
+ printf("\n\nCGPA\t\t%.2f\t\tOverall Comment\t\t",CGPA[count]);
+ overall_comment(cgpa);
+ printf("------------------------------------------------------------------------------------------------------------------------------------------\n\n");
+ }
+}
+
+//the main function. Execution begins from the first statement in main
+void main()
+{
+//the next statements call the necessary functions
+compute_finalmk();
+compute_gp();
+compute_CGPA();
+report();
+}

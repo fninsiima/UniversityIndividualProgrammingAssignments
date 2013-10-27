@@ -1,0 +1,4 @@
+Author: NINSIIMA FLAVIA DELMIRA
+Date:   24th October, 2013
+
+Important: Each assignment has its own 'ProjectDescription' file that gives details on the task to be executed!

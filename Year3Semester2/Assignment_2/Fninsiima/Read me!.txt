@@ -1,0 +1,19 @@
+' project:               Toyota_Uganda_Limited
+' programmer:            Ninsiima Flavia Delmira
+' last modified:         27 March 2013
+' description:           Database Name: Toyota_Uganda_Limited
+
+' studentNumber:         210000613
+' regNumber:             10/U/1382
+' courseName:            IndividualProjectII
+' courseCode:            CSC 2212
+
+' assignment 2
+
+The dvd contains two folders:
+Database: Has .mdf and .ldf database and log files respectively
+
+Tools used: Contains two softwares used to create the database
+MICROSOFT SQL SERVER 2005
+SQL SERVER MANAGEMENT STUDIO EXPRESS 
+
